@@ -6,12 +6,21 @@ import {
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom';
 
+const required = val => val && val.length;
+const maxLength = len => val => !val || (val.length <= len);
+const minLength = len => val => val && (val.length >= len);
+
 class CommentForm extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            isModalOpen: false
+            isModalOpen: false,
+            touched: {
+                rating: false,
+                author: false,
+                comment: false
+            }
         };
         this.toggleModal = this.toggleModal.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -51,7 +60,23 @@ class CommentForm extends Component {
                                 <Control.text model=".author" id="author" name="author"
                                     className="form-control"
                                     placeholder="Your Name"
+                                    validators={{
+                                        required,
+                                        maxLength: maxLength(15),
+                                        minLength: minLength(2)
+                                    }}
                                 />
+                                <Errors
+                                        className="text-danger"
+                                        model=".author"
+                                        show="touched"
+                                        component="div"
+                                        messages={{
+                                            required: "Required",
+                                            minLength: "Mus be at least 2 characters",
+                                            maxLength: "Must be 15 characters or less"
+                                        }}
+                                    />
                             </div>
                             <div className="form-group">
                                 <Label htmlFor="text">Comment</Label>
