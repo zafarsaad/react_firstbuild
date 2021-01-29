@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import {
-    Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem,
-    Button, Modal, ModalHeader, ModalBody, Input, FormGroup, Label, Form
+    Card, CardImg, CardText, CardBody, Breadcrumb, BreadcrumbItem,
+    Button, Modal, ModalHeader, ModalBody, Label
 } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom';
 import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 const required = val => val && val.length;
 const maxLength = len => val => !val || (val.length <= len);
@@ -71,16 +72,16 @@ class CommentForm extends Component {
                                     }}
                                 />
                                 <Errors
-                                        className="text-danger"
-                                        model=".author"
-                                        show="touched"
-                                        component="div"
-                                        messages={{
-                                            required: "Required",
-                                            minLength: "Mus be at least 2 characters",
-                                            maxLength: "Must be 15 characters or less"
-                                        }}
-                                    />
+                                    className="text-danger"
+                                    model=".author"
+                                    show="touched"
+                                    component="div"
+                                    messages={{
+                                        required: "Required",
+                                        minLength: "Mus be at least 2 characters",
+                                        maxLength: "Must be 15 characters or less"
+                                    }}
+                                />
                             </div>
                             <div className="form-group">
                                 <Label htmlFor="text">Comment</Label>
@@ -106,20 +107,27 @@ function RenderComments({ comments, postComment, campsiteId }) {
         return (
             <div className="col-md-5 m-1">
                 <h4>Comments</h4>
-                {
-                    comments.map((c) => (
-                        <div key={c.id}>
-                            <p>{c.text}</p>
-                            <p>
-                                {c.author},
+                <Stagger in>
+                    {
+                        comments.map((c) => {
+                            return (
+                                <Fade in key={c.id}>
+                                    <div>
+                                        <p>{c.text}
+                                            <br />
+                                        -- {c.author},
                                     {new Intl.DateTimeFormat('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: '2-digit'
-                                }).format(new Date(Date.parse(c.date)))}</p>
-                        </div>
-                    ))
-                }
+                                                year: 'numeric',
+                                                month: 'short',
+                                                day: '2-digit'
+                                            }).format(new Date(Date.parse(c.date)))}
+                                        </p>
+                                    </div>
+                                </Fade>
+                            );
+                        })
+                    }
+                </Stagger>
                 <CommentForm campsiteId={campsiteId} postComment={postComment} />
             </div>
         )
@@ -132,12 +140,18 @@ function RenderComments({ comments, postComment, campsiteId }) {
 function RenderCampsite({ campsite }) {
     return (
         <div className="col-md-5 m-1">
-            <Card>
-                <CardImg top src={baseUrl + campsite.image} alt={campsite.name} />
-                <CardBody>
-                    <CardText>{campsite.description}</CardText>
-                </CardBody>
-            </Card>
+            <FadeTransform
+                in
+                transformProps={{
+                    exitTransform: 'scale(0.5) translateY(-50%)'
+                }}>
+                <Card>
+                    <CardImg top src={baseUrl + campsite.image} alt={campsite.name} />
+                    <CardBody>
+                        <CardText>{campsite.description}</CardText>
+                    </CardBody>
+                </Card>
+            </FadeTransform>
         </div>
     )
 }
@@ -176,10 +190,10 @@ function CampsiteInfo(props) {
                 </div>
                 <div className="row">
                     <RenderCampsite campsite={props.campsite} />
-                    <RenderComments 
-                        comments={props.comments} 
+                    <RenderComments
+                        comments={props.comments}
                         postComment={props.postComment}
-                        campsiteId={props.campsite.id}/>
+                        campsiteId={props.campsite.id} />
                 </div>
             </div>
         )

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Breadcrumb, BreadcrumbItem, Button, Label, Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { Control, Form, Errors, actions } from 'react-redux-form';
+import { Control, Form, Errors } from 'react-redux-form';
+import { FadeTransform } from 'react-animation-components';
 
 const required = val => val && val.length;
 const maxLength = len => val => !val || (val.length <= len);
@@ -44,8 +45,9 @@ class Contact extends Component {
     }
 
     handleSubmit(values) {
-        console.log("Current state is =: " + JSON.stringify(values));
-        alert("Current state is: " + JSON.stringify(values));
+        // console.log("Current state is =: " + JSON.stringify(values));
+        // alert("Current state is: " + JSON.stringify(values));
+        this.props.postFeedback(values);
         this.props.resetFeedbackForm();
     }
 
@@ -53,6 +55,40 @@ class Contact extends Component {
 
         return (
             <div className="container">
+                <div className="row">
+                    <div className="col">
+                        <Breadcrumb>
+                            <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
+                            <BreadcrumbItem active>Contact Us</BreadcrumbItem>
+                        </Breadcrumb>
+                        <h2>Contact Us</h2>
+                        <hr />
+                    </div>
+                </div>
+
+                <FadeTransform
+                    in
+                    transformProps={{
+                        exitTransform: 'scale(2.0) translateY(10%)'
+                    }}>
+                    <div className="row row-content align-items-center">
+
+                        <div className="col-sm-4">
+                            <h5>Our Address</h5>
+                            <address>
+                                1 Nucamp Way<br />
+                            Seattle, WA 98001<br />
+                            U.S.A.
+                        </address>
+
+                        </div>
+                        <div className="col">
+                            <a role="button" className="btn btn-link" href="tel:+12065551234"><i className="fa fa-phone" /> 1-206-555-1234</a><br />
+                            <a role="button" className="btn btn-link" href="mailto:fakeemail@fakeemail.co"><i className="fa fa-envelope-o" /> campsites@nucamp.co</a>
+                        </div>
+                    </div>
+                </FadeTransform>
+
                 <div className="row row-content">
                     <div className="col-12">
                         <h2>Send us your Feedback</h2>
